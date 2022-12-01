@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  
+<head> 
+ <meta http-equiv="content-type" content="text/html;charset=utf-8">
+ <title>code -by zhenyu.sha</title>
+ <style type="text/css">
+  html, body {
+   width: 100%;
+   height: 100%;
+  }
+  body {
+   background: #000;
+   overflow: hidden;
+   margin: 0;
+   padding: 0;
+  }
+ </style>
+</head>
+  
+<body> 
+<canvas id="cvs"></canvas>
+<script type="text/javascript">
+ var cvs = document.getelementbyid("cvs");
+ var ctx = cvs.getcontext("2d");
+ var cw = cvs.width = document.body.clientwidth;
+ var ch = cvs.height = document.body.clientheight;
+ //动画绘制对象
+ var requestanimationframe = window.requestanimationframe || window.mozrequestanimationframe || window.webkitrequestanimationframe || window.msrequestanimationframe;
+ var coderainarr = []; //代码雨数组
+ var cols = parseint(cw / 14); //代码雨列数
+ var step = 16;  //步长，每一列内部数字之间的上下间隔
+ ctx.font = "bold 26px microsoft yahei"; //声明字体，个人喜欢微软雅黑
+ 
+ function createcolorcv() {
+  //画布基本颜色
+  ctx.fillstyle = "#242424";
+  ctx.fillrect(0, 0, cw, ch);
+ }
+ 
+ //创建代码雨
+ function createcoderain() {
+  for (var n = 0; n < cols; n++) {
+   var col = [];
+   //基础位置，为了列与列之间产生错位
+   var basepos = parseint(math.random() * 300);
+   //随机速度 3~13之间
+   var speed = parseint(math.random() * 10) + 3;
+   //每组的x轴位置随机产生
+   var colx = parseint(math.random() * cw)
+ 
+   //绿色随机
+   var rgbr = 0;
+   var rgbg = parseint(math.random() * 255);
+   var rgbb = 0;
+   //ctx.fillstyle = "rgb("+r+','+g+','+b+")"
+ 
+   for (var i = 0; i < parseint(ch / step) / 2; i++) {
+    var code = {
+     x: colx,
+     y: -(step * i) - basepos,
+     speed: speed,
+     // text : parseint(math.random()*10)%2 == 0 ? 0 : 1 //随机生成0或者1
+     text: ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "s", "t", "u", "v", "w", "x", "y", "z"][parseint(math.random() * 11)], //随机生成字母数组中的一个
+     color: "rgb(" + rgbr + ',' + rgbg + ',' + rgbb + ")"
+    }
+    col.push(code);
+   }
+   coderainarr.push(col);
+  }
+ }
+ 
+ //代码雨下起来
+ function coderaining() {
+  //把画布擦干净
+  ctx.clearrect(0, 0, cw, ch);
+  //创建有颜色的画布
+  //createcolorcv();
+  for (var n = 0; n < coderainarr.length; n++) {
+   //取出列
+   col = coderainarr[n];
+   //遍历列，画出该列的代码
+   for (var i = 0; i < col.length; i++) {
+    var code = col[i];
+    if (code.y > ch) {
+     //如果超出下边界则重置到顶部
+     code.y = 0;
+    } else {
+     //匀速降落
+     code.y += code.speed;
+    }
+    
+    //1 颜色也随机变化
+    //ctx.fillstyle = "hsl("+(parseint(math.random()*359)+1)+",30%,"+(50-i*2)+"%)"; 
+ 
+    //2 绿色逐渐变浅
+    // ctx.fillstyle = "hsl(123,80%,"+(30-i*2)+"%)"; 
+ 
+    //3 绿色随机
+    // var r= 0;
+    // var g= parseint(math.random()*255) + 3;
+    // var b= 0;
+    // ctx.fillstyle = "rgb("+r+','+g+','+b+")";
+ 
+    //4 一致绿
+    ctx.fillstyle = code.color;
+ 
+ 
+    //把代码画出来
+    ctx.filltext(code.text, code.x, code.y);
+   }
+  }
+  requestanimationframe(coderaining);
+ }
+ 
+ //创建代码雨
+ createcoderain();
+ //开始下雨吧 go>>
+ requestanimationframe(coderaining);
+</script>
+  
+</body>
+</html>
